@@ -9,11 +9,20 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.2",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@next/font": "^14.0.3",
     "aos": "^2.3.4",
+    "axios": "^1.6.2",
+    "framer-motion": "^10.16.12",
     "next": "14.0.3",
-    "react": "^18",
-    "react-dom": "^18"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-modal": "^3.16.1",
+    "react-router-dom": "^6.20.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.0.1",
