@@ -16,7 +16,7 @@ const EditService = () => {
   const [fileKk, setFileKk] = useState(null);
   const [previewKtp, setPreviewKtp] = useState('');
   const [previewKk, setPreviewKk] = useState('');
-  const id = router.query.id;
+  const id = router.query.service_id;
 
   useEffect(() => {
     if (id) {

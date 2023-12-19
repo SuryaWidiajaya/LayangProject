@@ -38,7 +38,7 @@ export default function CardArticle({ title, author ,  imgUrl, date, content1, i
                     {limitContent(content1, 20)}
                     </p>
                     <div className='mt-[14px]'>
-                    <a href={"/Article/"+id} className='mx-auto'>
+                    <a href={"/ArticleNews/Article/"+id} className='mx-auto'>
                         <ButtonArticle />
                         </a>
                     </div>

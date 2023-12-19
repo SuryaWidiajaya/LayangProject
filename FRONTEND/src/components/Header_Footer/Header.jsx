@@ -21,7 +21,7 @@ export default function Header() {
                 <Link href="./Profile ">Tentang Kami</Link>
               </li>
               <li className="space-x-12 text-black ml-[56px]">
-                <Link href="./NewsList">Artikel</Link>
+                <Link href="./ArticleNews">Artikel</Link>
               </li>
 
               <li className="space-x-12 text-black ml-[56px]">

@@ -5,9 +5,10 @@ import { useState } from 'react';
 
 export default function CardAdmin({ title, author, imgUrl, date, content1, id }) {
   const [showModal, setShowModal] = useState(false);
+  
   const deleteArticles = async (Id) => {
     try {
-      await axios.delete(`http://localhost:5000/articles/${Id}`);
+      await axios.delete(`http://localhost:3000/api/articles/${Id}`);
       setShowModal(false)
     } catch (error) {
       console.log(error);
@@ -29,7 +30,7 @@ export default function CardAdmin({ title, author, imgUrl, date, content1, id })
           <div className="bg-white p-4 rounded shadow-md">
             <p>Apakah Anda yakin ingin menghapus artikel ini?</p>
             <div className="flex justify-end mt-4">
-            <a href="/Admin">
+            <a href="/SuperAdmin">
               <button className="mr-2 px-4 py-2 bg-red-500 text-white rounded" onClick={onConfirm}>
                 Hapus
               </button>
@@ -78,7 +79,7 @@ export default function CardAdmin({ title, author, imgUrl, date, content1, id })
           <div className="mt-[14px]"></div>
         </div>
         <div className="flex gap-4 justify-end px-[32px] pb-[28px]">
-          <Link href={'/Admin/EditArticle/' + id}>
+          <Link href={'/SuperAdmin/Article/EditArticle/' + id}>
             <FaEdit className=" text-[#D9D9D9] cursor-pointer hover:text-[#919191]" />
           </Link>
 
