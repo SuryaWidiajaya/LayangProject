@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faNewspaper, faTools, faFileAlt, faMap, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import { faNewspaper, faTools, faFileAlt, faUser } from '@fortawesome/free-solid-svg-icons';
 import Article from './Article';
+import Kelurahan from './Kelurahan';
 import Admin from './Admin';
 import Link from 'next/link';
 
@@ -18,6 +19,8 @@ const Index = () => {
         return <Article />;
       case 'admin':
         return <Admin />;
+      case 'kelurahan':
+        return <Kelurahan />;
       default:
         return null;
     }
@@ -40,10 +43,17 @@ const Index = () => {
                     Article
                   </a>
                 </li>
-                <li className={activeTab === 'admin' ? 'mb-1 bg-white hover:bg-gray-300 cursor-pointer py-2 rounded-bl-xl' : 'mb-1 bg-white hover:bg-gray-300 cursor-pointer py-2 rounded-bl-xl'} onClick={() => handleTabChange('admin')}>
+                <li className={activeTab === 'admin' ? 'mb-1 bg-white hover:bg-gray-300 cursor-pointer py-2 ' : 'mb-1 bg-white hover:bg-gray-300 cursor-pointer py-2'} onClick={() => handleTabChange('admin')}>
+                  <a className="text-black text-xl pl-5 ">
+                    <FontAwesomeIcon icon={faUser} className="mr-2" />
+                    Admin
+                  </a>
+                </li>
+
+                <li className={activeTab === 'kelurahan' ? 'mb-1 bg-white hover:bg-gray-300 cursor-pointer py-2 rounded-bl-xl' : 'mb-1 bg-white hover:bg-gray-300 cursor-pointer py-2 rounded-bl-xl'} onClick={() => handleTabChange('kelurahan')}>
                   <a className="text-black text-xl pl-5 ">
                     <FontAwesomeIcon icon={faFileAlt} className="mr-2" />
-                    Admin
+                    Kelurahan
                   </a>
                 </li>
               </ul>

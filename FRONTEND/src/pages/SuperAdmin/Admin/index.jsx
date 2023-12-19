@@ -76,26 +76,26 @@ const Admin = () => {
               <th className="border-b-2 border-black px-2 py-2" style={{ width: '3%' }}>
                 id
               </th>
-              <th className="border-b-2 border-black px-2 py-2" style={{ width: '14%' }}>
+              <th className="border-b-2 border-black px-2 py-2" style={{ width: '3%' }}>
+                kel_id
+              </th>
+              <th className="border-b-2 border-black px-2 py-2" style={{ width: '16%' }}>
                 Nama
               </th>
-              <th className="border-b-2 border-black px-2 py-2" style={{ width: '12%' }}>
+              <th className="border-b-2 border-black px-2 py-2" style={{ width: '14%' }}>
                 Pangkat
               </th>
-              <th className="border-b-2 border-black px-2 py-2" style={{ width: '12%' }}>
+              <th className="border-b-2 border-black px-2 py-2" style={{ width: '14%' }}>
                 Nomor
               </th>
-              <th className="border-b-2 border-black px-2 py-2" style={{ width: '12%' }}>
+              <th className="border-b-2 border-black px-2 py-2" style={{ width: '14%' }}>
                 Email
               </th>
-              <th className="border-b-2 border-black px-2 py-2" style={{ width: '12%' }}>
+              <th className="border-b-2 border-black px-2 py-2" style={{ width: '14%' }}>
                 Password
               </th>
-              <th className="border-b-2 border-black px-2 py-2" style={{ width: '25%' }}>
-                Kelurahan
-              </th>
-              <th className="border-b-2 border-black px-2 py-2" style={{ width: '10%' }}>
-                IMG
+              <th className="border-b-2 border-black px-2 py-2" style={{ width: '22%' }}>
+                Alamat
               </th>
               <th className="border-b-2 border-black px-2 py-2" style={{ width: '10%' }}></th>
             </tr>
@@ -105,6 +105,9 @@ const Admin = () => {
               <tr key={item.id} className="" value={item.id}>
                 <td className="px-2 py-2" style={{ verticalAlign: 'top' }}>
                   {item.id}
+                </td>
+                <td className="px-2 py-2" style={{ verticalAlign: 'top' }}>
+                  {item.kelurahan_id}
                 </td>
                 <td className="px-2 py-2" style={{ verticalAlign: 'top' }}>
                   {item.nama.length > 30 ? `${item.nama.slice(0, 20)}...` : item.nama}
@@ -124,9 +127,7 @@ const Admin = () => {
                 <td className="px-2 py-2" style={{ verticalAlign: 'top' }}>
                   {item.alamat.length > 30 ? `${item.alamat.slice(0, 50)}...` : item.alamat}
                 </td>
-                <td className="px-2 py-2" style={{ verticalAlign: 'top' }}>
-                  {item.imageURL.length > 30 ? `${item.jenis.slice(0, 30)}...` : item.imageURL}
-                </td>
+              
                 <td className="py-2" style={{ verticalAlign: 'top' }}>
                   <div className="flex gap-4 justify-end px-5">
                     <Link href={`/SuperAdmin/Admin/EditAdmin/${item.id}`}>

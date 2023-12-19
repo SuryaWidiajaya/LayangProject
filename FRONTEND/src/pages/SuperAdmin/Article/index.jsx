@@ -6,7 +6,6 @@ import Link from 'next/link';
 
 const Article = () => {
   const [article, setArticles] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
 
   useEffect(() => {
@@ -22,14 +21,6 @@ const Article = () => {
     }
   };
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
   return (
     <>
       <div className="p-2 rounded-2xl bg-[#F1F1FF]">
@@ -37,7 +28,7 @@ const Article = () => {
           <Link href="/SuperAdmin/Article/AddArticle">
             <button
               className="w-14 h-14 bg-[#27005D] rounded-2xl overflow-hidden flex items-center justify-center"
-              onClick={openModal}
+              
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -50,23 +41,12 @@ const Article = () => {
               </svg>
             </button>
           </Link>
-          {isModalOpen && (
-            <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50">
-              <div className="flex items-center justify-center min-h-screen">
-                <div className="bg-white p-8 rounded shadow-lg">
-                  <p>Isi dari modal di sini...</p>
-                  <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded" onClick={closeModal}>
-                    Tutup
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
+          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {article.map((value) => (
               <CardAdmin
                 title={value.title}
-                author={value.name}
+                author={value.author}
                 imgUrl={value.url}
                 date={value.date}
                 content1={value.content}

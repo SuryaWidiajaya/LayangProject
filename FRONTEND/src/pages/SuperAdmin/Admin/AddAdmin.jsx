@@ -61,6 +61,7 @@ const AddAdmin = () => {
     formData.append('password', password);
     formData.append('alamat', alamat);
     formData.append('imageURL', imageURL);
+    
   
     try {
       await axios.post(`http://localhost:3000/api/admin`, formData, {
@@ -103,6 +104,7 @@ const AddAdmin = () => {
     try {
       const response = await axios.get('http://localhost:3000/api/daerah/provinsi/all');
       const provinsiData = response.data;
+      console.log(ProvinsiId)
       if (provinsiData && Array.isArray(provinsiData)) {
         setProvinsiList(provinsiData);
       } else {
@@ -115,7 +117,7 @@ const AddAdmin = () => {
 
   const loadKabupaten = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/daerah/provinsi/all`);
+      const response = await axios.get(`http://localhost:3000/api/daerah/kabupaten/${ProvinsiId}`);
       const kabupatenData = response.data;
       if (kabupatenData && Array.isArray(kabupatenData)) {
         setKabupatenList(kabupatenData);
@@ -131,7 +133,7 @@ const AddAdmin = () => {
   
   const loadKecamatan = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/daerah/provinsi/all`);
+      const response = await axios.get(`http://localhost:3000/api/daerah/kecamatan/${KabupatenId}`);
       const kecamatanData = response.data;
       if (kecamatanData && Array.isArray(kecamatanData)) {
         setKecamatanList(kecamatanData);
@@ -261,17 +263,6 @@ const AddAdmin = () => {
                 type="text"
                 value={alamat}
                 onChange={(e) => setAlamat(e.target.value)}
-                placeholder="Admin Name"
-                className="rounded-[10px] border-[1px] border-[#D9D9D9] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">Image:</label>
-              <textarea
-                type="text"
-                value={imageURL}
-                onChange={(e) => setImageURL(e.target.value)}
                 placeholder="Admin Name"
                 className="rounded-[10px] border-[1px] border-[#D9D9D9] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />

@@ -1,124 +1,237 @@
-import Article from "../models/ArticleModal.js";
+import * as ArticleModel from '../models/ArticleModal.js';
 import path from "path";
 import fs from "fs";
 
+const getArticles = async (req, res) => {
+  try {
+    const [data] = await ArticleModel.getArticles();
 
-export const getArticles = async (req, res) => {
-    try {
-        const response = await Article.findAll();
-        res.json(response);
-    } catch (error) {
-        console.log(error.message);
+
+    res.json({
+      message: 'GET all Article success',
+      data: data,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Server Error',
+      serverMessage: error,
+    });
+  }
+};
+
+const getArticleById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [data] = await ArticleModel.getArticleById(id)
+
+    res.json({
+      message: 'GET Article success',
+      data: data,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Server Error',
+      serverMessage: error.message || error,
+    });
+  }
+};
+
+
+const saveArticle = async (req, res) => {
+  try {
+    const { body } = req;
+
+    if (!req.files || !req.files.file) {
+      return res.status(422).json({ msg: 'File tidak ditemukan' });
     }
-}
 
-export const getArticleById = async (req, res) => {
-    try {
-        const response = await Article.findOne({
-            where: {
-                id: req.params.id
-            }
-        });
-        res.json(response);
-    } catch (error) {
-        console.log(error.message);
-    }
-}
-
-export const saveArticle = (req, res) => {
-    if (req.files === null) return res.status(400).json({ msg: "Mohon lengkapi data" });
-    const name = req.body.author;
-    const date = req.body.date;
-    const title = req.body.title;
-    const content = req.body.content;
     const file = req.files.file;
     const fileSize = file.data.length;
     const ext = path.extname(file.name);
     const fileName = `${Date.now()}_${file.md5}${ext}`;
-    const url = `${req.protocol}://${req.get("host")}/imagesArticle/${fileName}`;
-    const allowedType = ['.png', '.jpg', '.jpeg'];
+    const url = `${req.protocol}://${req.get('host')}/imagesArticle/${fileName}`;
+    const allowedTypes = ['.png', '.jpg', '.jpeg'];
 
-    if (!allowedType.includes(ext.toLowerCase())) return res.status(422).json({ msg: "Format image tidak sesuai" });
-    if (fileSize > 5000000) return res.status(422).json({ msg: "Ukuran maksimal image hanya 5 MB" });
+    if (!allowedTypes.includes(ext.toLowerCase())) {
+      return res.status(422).json({ msg: 'Format gambar tidak sesuai' });
+    }
+
+    if (fileSize > 5000000) {
+      return res.status(422).json({ msg: 'Ukuran maksimal gambar hanya 5 MB' });
+    }
 
     file.mv(`./public/imagesArticle/${fileName}`, async (err) => {
-        if (err) return res.status(500).json({ msg: err.message });
-        try {
-            await Article.create({ name: name, image: fileName, url: url, date: date, title: title, content: content });
-            res.status(201).json({ msg: "Article Created Successfuly" });
-        } catch (error) {
-            console.log(error.message);
-        }
-    })
+      if (err) {
+        return res.status(500).json({ msg: err.message });
+      }
 
-}
+      try {
+        await ArticleModel.saveArticle(body, fileName, url);
 
-export const updateArticle = async (req, res) => {
-    const article = await Article.findOne({
-        where: {
-            id: req.params.id
-        }
-    });
-    if (!article) return res.status(404).json({ msg: "Data tidak ditemukan" });
-
-    let fileName = "";
-    if (req.files === null) {
-        fileName = Article.image;
-    } else {
-        const file = req.files.file;
-        const fileSize = file.data.length;
-        const ext = path.extname(file.name);
-        fileName = file.md5 + ext;
-        const allowedType = ['.png', '.jpg', '.jpeg'];
-
-        if (!allowedType.includes(ext.toLowerCase())) return res.status(422).json({ msg: "Format image tidak sesuai" });
-        if (fileSize > 5000000) return res.status(422).json({ msg: "Ukuran maksimal image hanya 5 MB" });
-
-        const filepath = `./public/imagesArticle/${article.image}`;
-        fs.unlinkSync(filepath);
-
-        file.mv(`./public/imagesArticle/${fileName}`, (err) => {
-            if (err) return res.status(500).json({ msg: err.message });
+        res.status(201).json({
+          message: 'CREATE new article success',
+          data: body,
         });
+      } catch (error) {
+        res.status(500).json({
+          message: 'Server Error',
+          serverMessage: error,
+        });
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Server Error',
+      serverMessage: error.message || error,
+    });
+  }
+};
+
+const updateArticle = async (req, res) => {
+  const { id } = req.params;
+
+  async function getImageResult() {
+    try {
+      let imageResult = await ArticleModel.getImage(id);
+      let getImage = imageResult[0][0].image;
+      return getImage;
+    } catch (error) {
+      console.error("Error fetching image:", error);
+      throw error;
+    }
+  }
+
+  try {
+    const article = await ArticleModel.getArticleById(id);
+
+    if (!article) {
+      return res.status(404).json({ msg: "Data tidak ditemukan" });
     }
 
-    const name = req.body.author;   
-    const date = req.body.date;
-    const title = req.body.title;
-    const content = req.body.content;
+    const image1 = await getImageResult();
+
+    let fileName = image1;
+
+    if (req.files !== null) {
+      const file = req.files.file;
+      const fileSize = file.data.length;
+      const ext = path.extname(file.name);
+      fileName = file.md5 + ext;
+      const allowedType = ['.png', '.jpg', '.jpeg'];
+
+      if (!allowedType.includes(ext.toLowerCase())) {
+        return res.status(422).json({ msg: "Format image tidak sesuai" });
+      }
+
+      if (fileSize > 5000000) {
+        return res.status(422).json({ msg: "Ukuran maksimal image hanya 5 MB" });
+      }
+
+      const filepath = `./public/imagesArticle/${image1}`;
+
+      try {
+        fs.unlinkSync(filepath);
+      } catch (error) {
+        console.error("Error deleting image:", error);
+      }
+
+      file.mv(`./public/imagesArticle/${fileName}`, (err) => {
+        if (err) {
+          return res.status(500).json({ msg: err.message });
+        }
+      });
+    }
+
+    const { body } = req;
     const url = `${req.protocol}://${req.get("host")}/imagesArticle/${fileName}`;
 
-    try {
-        await Article.update({ name: name, image: fileName, url: url, date: date, title: title, content: content }, {
-            where: {
-                id: req.params.id
-            }
-        });
-        res.status(200).json({ msg: "Article Updated Successfuly" });
-    } catch (error) {
-        console.log(error.message);
-    }
-}
+    await ArticleModel.updateArticle(body, fileName, url, id);
 
-export const deleteArticle = async (req, res) => {
-    const article = await Article.findOne({
-        where: {
-            id: req.params.id
-        }
+    res.json({
+      message: 'UPDATE Article success',
+      data: {
+        id: id,
+        ...body,
+      },
     });
-    if (!article) return res.status(404).json({ msg: "No Data Found" });
+  } catch (error) {
+    console.error("Server Error:", error);
+    res.status(500).json({
+      message: 'Server Error',
+      serverMessage: error.message,
+    });
+  }
+};
 
-    try {
-        const filepath = `./public/imagesArticle/${article.image}`;
-        fs.unlinkSync(filepath);
-        await Article.destroy({
-            where: {
-                id: req.params.id
-            }
-        });
-        res.status(200).json({ msg: "Article Deleted Successfuly" });
-    } catch (error) {
-        console.log(error.message);
+
+const deleteArticle = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const image1 = await getImageResult(id);
+    const article = await ArticleModel.getArticleById(id);
+    if (!article) {
+      return res.status(404).json({ msg: "No Data Found" });
     }
-}
 
+    const filepath = `./public/imagesArticle/${image1}`;
+    fs.unlinkSync(filepath);
+
+    await ArticleModel.deleteArticle(id);
+
+    res.json({
+      message: 'DELETE Article success',
+      data: null,
+    });
+  } catch (error) {
+    console.error("Error deleting article:", error);
+    res.status(500).json({
+      message: 'Server Error',
+      serverMessage: error.message,
+    });
+  }
+};
+
+async function getImageResult(id) {
+  try {
+    const imageResult = await ArticleModel.getImage(id);
+    const getImage = imageResult[0][0].image;
+    return getImage;
+  } catch (error) {
+    console.error("Error fetching image:", error);
+    throw error;
+  }
+}
+const getLatestArticles = async (req, res) => {
+  try {
+    const { size } = req.body;
+    const latestArticles = await ArticleModel.getLatestArticles(size);
+    res.json(latestArticles);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+const getArticlesByPage = async (req, res) => {
+  try {
+    const { page, pageSize } = req.body;
+    const articles = await ArticleModel.getArticlesByPage(page, pageSize);
+    res.json(articles);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
+
+export {
+  getArticles,
+  getArticleById,
+  saveArticle,
+  updateArticle,
+  deleteArticle,
+  getLatestArticles,
+  getArticlesByPage
+};
